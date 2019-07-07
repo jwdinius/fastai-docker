@@ -1,5 +1,7 @@
 # Paperspace + Fast.ai Docker files
 
+## jwdinius-specific addition
+After following the build steps below, you can launch a container automatically with `launch-docker.sh`.  This is the recommended way because it sets up a lot of the preamble (ports, volumes, etc...) for you.
 
 ## Overview
 

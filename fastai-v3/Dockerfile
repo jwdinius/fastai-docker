@@ -1,4 +1,11 @@
 FROM nvidia/cuda:9.2-base-ubuntu16.04
+
+## modify below
+ARG username=joe
+ARG groupid=1000
+ARG userid=1000
+## end modify
+
 # See http://bugs.python.org/issue19846
 ENV LANG C.UTF-8
 LABEL com.nvidia.volumes.needed="nvidia_driver"
@@ -29,21 +36,23 @@ RUN curl -o ~/miniconda.sh -O  https://repo.continuum.io/miniconda/Miniconda3-la
     /opt/conda/bin/conda install conda-build
 
 ENV PATH=$PATH:/opt/conda/bin/
-ENV USER fastai
+#ENV USER fastai
 # Create Enviroment
 COPY enviroment.yaml /enviroment.yaml
 RUN conda env create -f enviroment.yaml
 
-WORKDIR /notebooks
+#WORKDIR /notebooks
 # Activate Source
 CMD source activate fastai
-CMD source ~/.bashrc
+#CMD source ~/.bashrc
 
-RUN chmod -R a+w /notebooks
-WORKDIR /notebooks
+# -m option creates a fake writable home folder for Jupyter.
+RUN groupadd -g $groupid $username \
+    && useradd -m -r -u $userid -g $username $username
+USER $username
 
 # Clone course-v3
-RUN git clone https://github.com/fastai/course-v3.git
+#RUN git clone https://github.com/fastai/course-v3.git
 
 COPY config.yml /root/.fastai/config.yml
 COPY run.sh /run.sh
